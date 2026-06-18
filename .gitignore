@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+
+# Kotlin compiler state
+.kotlin/
+
+# Nix / direnv
+result
+result-*
+.direnv/
+
+# IntelliJ
+.idea/
+.idea-env/
+*.iml
+
+
+# Minecraft
+run/
+runClient/
+runServer/
+logs/
+fabric/src/generated/
