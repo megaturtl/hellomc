@@ -1,26 +1,30 @@
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
+
 plugins {
-    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
-    id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'com.gradleup.shadow' version '8.3.6' apply false
+    id("dev.architectury.loom") version "1.11-SNAPSHOT" apply false
+    id("architectury-plugin") version "3.4-SNAPSHOT"
+    id("com.gradleup.shadow") version "8.3.6" apply false
 }
 
 architectury {
-    minecraft = project.minecraft_version
+    minecraft = property("minecraft_version") as String
 }
 
 allprojects {
-    group = rootProject.maven_group
-    version = rootProject.mod_version
+    group = rootProject.property("maven_group") as String
+    version = rootProject.property("mod_version") as String
 }
 
 subprojects {
-    apply plugin: 'dev.architectury.loom'
-    apply plugin: 'architectury-plugin'
-    apply plugin: 'maven-publish'
+    plugins.apply("dev.architectury.loom")
+    plugins.apply("architectury-plugin")
+    plugins.apply("maven-publish")
 
-    base {
+    val loom = extensions.getByType<LoomGradleExtensionAPI>()
+
+    configure<BasePluginExtension> {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
-        archivesName = "$rootProject.archives_name-$project.name"
+        archivesName.set("${rootProject.property("archives_name")}-${project.name}")
     }
 
     repositories {
@@ -31,16 +35,14 @@ subprojects {
         // for more information about repositories.
     }
 
-    loom {
-        silentMojangMappingsLicense()
-    }
+    loom.silentMojangMappingsLicense()
 
     dependencies {
-        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
-        mappings loom.officialMojangMappings()
+        "minecraft"("net.minecraft:minecraft:${rootProject.property("minecraft_version")}")
+        "mappings"(loom.officialMojangMappings())
     }
 
-    java {
+    configure<JavaPluginExtension> {
         // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
         // if it is present.
         // If you remove this line, sources will not be generated.
@@ -50,16 +52,16 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    tasks.withType(JavaCompile).configureEach {
-        it.options.release = 21
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(21)
     }
 
     // Configure Maven publishing.
-    publishing {
+    configure<PublishingExtension> {
         publications {
-            mavenJava(MavenPublication) {
-                artifactId = base.archivesName.get()
-                from components.java
+            create<MavenPublication>("mavenJava") {
+                artifactId = the<BasePluginExtension>().archivesName.get()
+                from(components["java"])
             }
         }
 
