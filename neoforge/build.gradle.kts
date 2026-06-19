@@ -31,6 +31,11 @@ repositories {
 dependencies {
     "neoForge"("net.neoforged:neoforge:${rootProject.property("neoforge_version")}")
 
+    implementation("thedarkcolour:kotlinforforge-neoforge:${rootProject.property("kotlin_for_forge_version")}")
+
+    // runtimeOnly (not modRuntimeOnly) so Loom can remap Cobblemon's bundled parsers correctly.
+    runtimeOnly("com.cobblemon:neoforge:${rootProject.property("cobblemon_version")}")
+
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(path = ":common", configuration = "transformProductionNeoForge"))
 }

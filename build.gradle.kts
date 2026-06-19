@@ -1,9 +1,12 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("dev.architectury.loom") version "1.11-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("com.gradleup.shadow") version "8.3.6" apply false
+    kotlin("jvm") version "2.2.20" apply false
 }
 
 architectury {
@@ -19,6 +22,7 @@ subprojects {
     plugins.apply("dev.architectury.loom")
     plugins.apply("architectury-plugin")
     plugins.apply("maven-publish")
+    plugins.apply("org.jetbrains.kotlin.jvm")
 
     val loom = extensions.getByType<LoomGradleExtensionAPI>()
 
@@ -28,11 +32,9 @@ subprojects {
     }
 
     repositories {
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
+        mavenCentral()
+        maven("https://maven.impactdev.net/repository/development") { name = "ImpactDev (Cobblemon)" }
+        maven("https://thedarkcolour.github.io/KotlinForForge/") { name = "Kotlin for Forge" }
     }
 
     loom.silentMojangMappingsLicense()
@@ -54,6 +56,10 @@ subprojects {
 
     tasks.withType<JavaCompile>().configureEach {
         options.release.set(21)
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
     }
 
     // Configure Maven publishing.
