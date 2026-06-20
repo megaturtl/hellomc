@@ -37,11 +37,13 @@ dependencies {
 
 tasks.processResources {
     filesMatching("fabric.mod.json") {
-        expand("mod_version" to rootProject.property("mod_version"))
-        expand("mod_id" to rootProject.property("mod_id"))
-        expand("mod_name" to rootProject.property("mod_name"))
-        expand("mod_author" to rootProject.property("mod_author"))
-        expand("mod_description" to rootProject.property("mod_description"))
+        expand(
+            "mod_version" to rootProject.property("mod_version"),
+            "mod_id" to rootProject.property("mod_id"),
+            "mod_name" to rootProject.property("mod_name"),
+            "mod_author" to rootProject.property("mod_author"),
+            "mod_description" to rootProject.property("mod_description"),
+        )
     }
 }
 
