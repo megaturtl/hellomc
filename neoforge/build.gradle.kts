@@ -36,6 +36,8 @@ dependencies {
     // runtimeOnly (not modRuntimeOnly) so Loom can remap Cobblemon's bundled parsers correctly.
     runtimeOnly("com.cobblemon:neoforge:${rootProject.property("cobblemon_version")}")
 
+    modLocalRuntime("me.djtheredstoner:DevAuth-neoforge:1.2.2")
+
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(path = ":common", configuration = "transformProductionNeoForge"))
 }

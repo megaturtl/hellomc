@@ -31,6 +31,8 @@ dependencies {
 
     modRuntimeOnly("com.cobblemon:fabric:${rootProject.property("cobblemon_version")}")
 
+    modLocalRuntime("me.djtheredstoner:DevAuth-fabric:1.2.2")
+
     common(project(path = ":common", configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(path = ":common", configuration = "transformProductionFabric"))
 }

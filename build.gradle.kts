@@ -35,6 +35,7 @@ subprojects {
         mavenCentral()
         maven("https://maven.impactdev.net/repository/development") { name = "ImpactDev (Cobblemon)" }
         maven("https://thedarkcolour.github.io/KotlinForForge/") { name = "Kotlin for Forge" }
+        maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1") { name = "DevAuth" }
     }
 
     loom.silentMojangMappingsLicense()
