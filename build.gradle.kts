@@ -1,4 +1,5 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import org.gradle.language.jvm.tasks.ProcessResources
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -14,14 +15,13 @@ architectury {
 }
 
 allprojects {
-    group = rootProject.property("maven_group") as String
+    group = rootProject.property("group") as String
     version = rootProject.property("mod_version") as String
 }
 
 subprojects {
     plugins.apply("dev.architectury.loom")
     plugins.apply("architectury-plugin")
-    plugins.apply("maven-publish")
     plugins.apply("org.jetbrains.kotlin.jvm")
 
     val loom = extensions.getByType<LoomGradleExtensionAPI>()
@@ -40,17 +40,33 @@ subprojects {
 
     loom.silentMojangMappingsLicense()
 
+    // Expand gradle.properties values into the loader metadata
+    tasks.withType<ProcessResources>().configureEach {
+        val expandProps =
+            mapOf(
+                "mod_id" to rootProject.property("mod_id"),
+                "mod_name" to rootProject.property("mod_name"),
+                "mod_version" to rootProject.property("mod_version"),
+                "mod_author" to rootProject.property("mod_author"),
+                "mod_description" to rootProject.property("mod_description"),
+                "mod_license" to rootProject.property("mod_license"),
+                "minecraft_version" to rootProject.property("minecraft_version"),
+                "fabric_loader_version" to rootProject.property("fabric_loader_version"),
+                "neoforge_version" to rootProject.property("neoforge_version"),
+                "cobblemon_version" to rootProject.property("cobblemon_version"),
+            )
+        inputs.properties(expandProps)
+        filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml")) {
+            expand(expandProps)
+        }
+    }
+
     dependencies {
         "minecraft"("net.minecraft:minecraft:${rootProject.property("minecraft_version")}")
         "mappings"(loom.officialMojangMappings())
     }
 
     configure<JavaPluginExtension> {
-        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-        // if it is present.
-        // If you remove this line, sources will not be generated.
-        withSourcesJar()
-
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
@@ -61,23 +77,5 @@ subprojects {
 
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
-    }
-
-    // Configure Maven publishing.
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                artifactId = the<BasePluginExtension>().archivesName.get()
-                from(components["java"])
-            }
-        }
-
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-        repositories {
-            // Add repositories to publish to here.
-            // Notice: This block does NOT have the same function as the block in the top level.
-            // The repositories here will be used for publishing your artifact, not for
-            // retrieving dependencies.
-        }
     }
 }

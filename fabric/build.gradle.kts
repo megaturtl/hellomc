@@ -37,18 +37,6 @@ dependencies {
     shadowBundle(project(path = ":common", configuration = "transformProductionFabric"))
 }
 
-tasks.processResources {
-    filesMatching("fabric.mod.json") {
-        expand(
-            "mod_version" to rootProject.property("mod_version"),
-            "mod_id" to rootProject.property("mod_id"),
-            "mod_name" to rootProject.property("mod_name"),
-            "mod_author" to rootProject.property("mod_author"),
-            "mod_description" to rootProject.property("mod_description"),
-        )
-    }
-}
-
 tasks.shadowJar {
     configurations = listOf(shadowBundle)
     archiveClassifier.set("dev-shadow")
