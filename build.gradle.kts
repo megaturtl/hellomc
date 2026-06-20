@@ -28,7 +28,7 @@ subprojects {
 
     configure<BasePluginExtension> {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
-        archivesName.set("${rootProject.property("archives_name")}-${project.name}")
+        archivesName.set("${rootProject.property("mod_id")}-${project.name}")
     }
 
     repositories {

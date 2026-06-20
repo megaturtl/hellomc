@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "hellomc",
-  "version": "${version}",
-  "name": "hellomc",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
-    "Me!"
+    "${mod_author}"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -16,10 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "cc.turtl.hellomc.fabric.ExampleModFabric"
+      "cc.turtl.hellomc.fabric.HelloMcFabric"
     ],
     "client": [
-      "cc.turtl.hellomc.fabric.client.ExampleModFabricClient"
+      "cc.turtl.hellomc.fabric.client.HelloMcFabricClient"
     ]
   },
   "mixins": [
